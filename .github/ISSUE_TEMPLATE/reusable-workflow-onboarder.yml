@@ -9,7 +9,7 @@ body:
       description: Enter in the name of the repository in GitHub in the format of ORG-NAME/REPO-NAME
       placeholder: joshjohanning-org/my-repo-name
     validations:
-      required: false
+      required: true
   - type: dropdown
     attributes:
       label: Repo Language
