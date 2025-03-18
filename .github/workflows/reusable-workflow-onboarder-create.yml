@@ -1,4 +1,4 @@
-name: new-repo-create
+name: reusable-workflow-onboarder-create
 
 run-name: '🚀 Actions onboarding create: Issue #${{ github.event.issue.number }} by @${{ github.actor }}'
 
