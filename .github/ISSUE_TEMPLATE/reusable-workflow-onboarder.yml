@@ -1,6 +1,6 @@
-name: 🛠️ Onboarding to GitHub Actions
+name: 🚀 Onboarding to GitHub Actions
 description: Answer the questions for a generated template to onboard onto GitHub Actions using our pre-created reusable workflows
-title: "Onboarding to GitHub Actions"
+title: "🚀 Onboarding to GitHub Actions"
 labels: ["actions"]
 body:
   - type: input
