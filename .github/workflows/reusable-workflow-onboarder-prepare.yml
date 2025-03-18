@@ -1,6 +1,6 @@
 name: reusable-workflow-onboarder-prepare
 
-run-name: '🚀 Actions onboarding: Issue #${{ github.event.issue.number }} by @${{ github.actor }}'
+run-name: '🚀 Actions onboarding prepare: Issue #${{ github.event.issue.number }} by @${{ github.actor }}'
 
 on:
   issues:
