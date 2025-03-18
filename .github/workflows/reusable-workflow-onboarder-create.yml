@@ -26,7 +26,7 @@ jobs:
       - uses: stefanbuck/github-issue-parser@v3
         id: issue-parser
         with:
-          template-path: .github/ISSUE_TEMPLATE/new-repo.yml
+          template-path: .github/ISSUE_TEMPLATE/reusable-workflow-onboarder.yml
 
       - uses: actions/create-github-app-token@v1
         id: app-token
@@ -100,7 +100,7 @@ jobs:
         with:
           script: |
             let commentBody
-            commentBody = `😢 The new repo could not be created. Please review the [action logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more information.`
+            commentBody = `😢 The onboarding to Actions workflow failed. Please review the [action logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more information.`
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
