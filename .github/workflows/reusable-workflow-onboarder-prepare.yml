@@ -67,13 +67,16 @@ jobs:
             - The **repo language** is set to be: **\`${{ env.REPO_LANGUAGE }}\`**
             - The **other configuration** setting is set to be: **\`${{ env.OTHER_CONFIGURATION }}\`**
 
-            ## Create the repo
+            ## Onboard to Actions
 
-            Add the following comment to this issue in order to create the repo:
+            Add the following comment to this issue in order to start the onboarding process onto Actions:
           
             \`\`\`
             /onboard-to-actions
             \`\`\`
+            
+            This will configure a workflow for you and create a pull request in the repository you have selected. After running, any follow-up requirements will be provided to you in the linked pull request!
+            
             `
 
             await github.rest.issues.createComment({
