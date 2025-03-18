@@ -1,0 +1,98 @@
+name: reusable-workflow-onboarder-prepare
+
+run-name: '🚀 Actions onboarding: Issue #${{ github.event.issue.number }} by @${{ github.actor }}'
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  reusable-workflow-onboarder-prepare:
+    name: Prepare Migration
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues' &&
+      (github.event.action == 'opened') &&
+      contains(github.event.issue.labels.*.name, 'actions')
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Write GitHub context to log
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - uses: stefanbuck/github-issue-parser@v3
+        id: issue-parser
+        with:
+          template-path: .github/ISSUE_TEMPLATE/reusable-workflow-onboarder.yml
+
+      - name: Set env vars
+        run: | 
+          echo "REPO_NAME=${{ steps.issue-parser.outputs.issueparser_repo_name }}" >> $GITHUB_ENV
+          echo "REPO_LANGUAGE=${{ steps.issue-parser.outputs.issueparser_repo_language }}" >> $GITHUB_ENV
+          echo "OTHER_CONFIGURATION=${{ steps.issue-parser.outputs.issueparser_other_configuration }}" >> $GITHUB_ENV
+
+      - name: Rename issue
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              title: `🚀 Actions onboarding: ${process.env.REPO_NAME}`
+            })
+
+      - name: Post prepare message
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            let commentBody
+            commentBody = `👋 Thank you for opening this new repo issue, @${{ github.actor }}.
+
+            The following has been parsed from your issue body:
+            - The **repo name** is set to be: **\`${{ env.REPO_NAME }}\`**
+            - The **repo language** is set to be: **\`${{ env.REPO_LANGUAGE }}\`**
+            - The **other configuration** setting is set to be: **\`${{ env.OTHER_CONFIGURATION }}\`**
+
+            ## Create the repo
+
+            Add the following comment to this issue in order to create the repo:
+          
+            \`\`\`
+            /onboard-to-actions
+            \`\`\`
+            `
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: commentBody.replace(/  +/g, '')
+            })
+            
+      - name: Post failure message
+        if: ${{ failure() }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            let commentBody
+            commentBody = `😢 The issue body could not be parsed, @${{ github.actor }}. Please open a new issue using the issue template and ensure your formatting and line spacing remains untouched.`
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: commentBody.replace(/  +/g, '')
+            })
