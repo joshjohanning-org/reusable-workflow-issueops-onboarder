@@ -51,7 +51,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              title: `title: `🚀 Actions onboarding: ${process.env.REPO_NAME}``
+              title: `🚀 Actions onboarding: ${process.env.REPO_NAME}`
             })
 
       # TODO: modify YAML file accordingly
