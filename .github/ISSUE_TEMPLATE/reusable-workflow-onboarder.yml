@@ -15,6 +15,7 @@ body:
       label: Repo Language
       description: Please select the visibility for the new repository
       options:
+        - PLEASE SELECT ONE
         - docker
         - terraform
         - java (todo)
