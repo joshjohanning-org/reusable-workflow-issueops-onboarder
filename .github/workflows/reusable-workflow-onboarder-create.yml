@@ -54,11 +54,12 @@ jobs:
               title: `🚀 Actions onboarding: ${process.env.REPO_NAME}`
             })
 
-      # TODO: modify YAML file accordingly
-      # TODO: create branch
-      # TODO: create tree/commit/push to branch
+      # TODO: modify YAML file accordingly (for the reusable workflow)
+      # TODO: create branch on the target repo
+      # TODO: create tree/commit/push to branch (using git commands locally or the GitHub API)
       # TODO: create pull request - include any TODOs remaining for user (and tag them in the PR / add as an assignee)
       # TODO: provide link to PR back as a comment in the issue created here
+      # TODO: ceate a Copilot custom instructions file and PR it the repo also? `.github/copilot-instructions.md`
 
       - name: Add created label and close issue
         if: ${{ success() }}
