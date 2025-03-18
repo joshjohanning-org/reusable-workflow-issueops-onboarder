@@ -74,6 +74,7 @@ jobs:
               state: "closed"
             })
 
+      # TODO: extract the pull request ID and add to the URL
       - name: Post successful message
         uses: actions/github-script@v6
         if: ${{ success() }}
@@ -81,9 +82,9 @@ jobs:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
             let commentBody
-            commentBody = `🚀 New repo created successfully.
+            commentBody = `🚀 Actions onboarding pull request created.
 
-            Visit the following link for the repo: [https://github.com/${{ github.repository_owner }}/${{ steps.issue-parser.outputs.issueparser_repo_name }}](https://github.com/${{ github.repository_owner }}/${{ steps.issue-parser.outputs.issueparser_repo_name }})
+            Visit the following link for the pull request: [https://github.com/${{ env.REPO_NAME }}/pull/$VARIABLE)
             `
 
             await github.rest.issues.createComment({
