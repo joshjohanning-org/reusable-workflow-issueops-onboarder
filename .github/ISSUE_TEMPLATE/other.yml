@@ -1,0 +1,31 @@
+name: ✏️ placeholder issue template 2
+description: na
+title: "placeholder"
+labels: ["actions"]
+body:
+  - type: input
+    attributes:
+      label: Repo Name
+      description: Enter in the name of the repository in GitHub in the format of ORG-NAME/REPO-NAME
+      placeholder: joshjohanning-org/my-repo-name
+    validations:
+      required: false
+  - type: dropdown
+    attributes:
+      label: Repo Language
+      description: Please select the visibility for the new repository
+      options:
+        - docker
+        - terraform
+        - java (todo)
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Other Configuration
+      description: Add in these other configuration files / workflows into the repository? 
+      options:
+        - label: "Dependency Review"
+          required: false
+        - label: "Dependabot"
+          required: false
