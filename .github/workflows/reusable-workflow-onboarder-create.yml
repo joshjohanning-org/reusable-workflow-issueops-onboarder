@@ -84,7 +84,7 @@ jobs:
             let commentBody
             commentBody = `🚀 Actions onboarding pull request created.
 
-            Visit the following link for the pull request: [https://github.com/${{ env.REPO_NAME }}/pull/$VARIABLE)
+            Visit the following link for the [pull request](https://github.com/${{ env.REPO_NAME }}/pull/$VARIABLE)
             `
 
             await github.rest.issues.createComment({
