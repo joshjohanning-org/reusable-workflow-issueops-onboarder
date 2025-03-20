@@ -35,6 +35,12 @@ jobs:
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
 
+      - uses: actions/checkout@v4
+        with:
+          repository: joshjohanning-org/reusable-workflows
+          token: ${{ steps.app-token.outputs.token }}
+          path: reusable-workflows
+
       # setting as env variables to avoid potential script injection
       - name: Set env vars
         run: |
@@ -79,23 +85,40 @@ jobs:
         with:
           script: |
             const fs = require('fs');
+
+            // Build the multi-gitter-config-repos.yml file
             const repositories = process.env.REPOSITORIES.split('\n').map(repo => repo.trim()).filter(repo => repo !== '');
-            const configContent = `repo:\n` + repositories.map(repo => `  - ${repo}`).join('\n');
-            fs.writeFileSync('multi-gitter-config.yml', configContent);
+            const reposConfigContent = `repo:\n` + repositories.map(repo => `  - ${repo}`).join('\n');
+            fs.writeFileSync('multi-gitter-config-repos.yml', reposConfigContent);
+
+            // Append the contents of multi-gitter-config-repos.yml to multi-gitter-config.yml
+            const reposConfig = fs.readFileSync('multi-gitter-config-repos.yml', 'utf8');
+            fs.appendFileSync('multi-gitter-config.yml', reposConfig);
 
       - name: print config
         run: cat multi-gitter-config.yml
 
-      # - name: run multi-gitter
-      #   run: |
-      #     multi-gitter run \
-      #       --repo "${{ steps.issue-parser.outputs.issueparser_repositories }}" \
-      #       --branch "actions-onboarding" \
-      #       --message "Onboarding to Actions" \
-      #       --template .github/workflows/reusable-workflow-onboarder-prepare.yml \
-      #       --config .github/multi-gitter-config.yml
-      #       --config-branch "actions-onboarding" \
-      #       --config-message "Onboarding to Actions"
+      - name: update script based on the language
+        run: |
+          if [[ "${{ env.REPO_LANGUAGE }}" == "docker" ]]; then
+            workflow="docker-build.yml"
+          elif [[ "${{ env.REPO_LANGUAGE }}" == "java" ]]; then
+            workflow="java-springboot-build.yml"
+          else
+            echo "Unknown language: ${{ env.REPO_LANGUAGE }}"
+            exit 1
+          fi
+
+          sed  "s|\$1|./reusable-workflows/.github/workflows/$workflow|g" ./scripts/add-workflow.sh
+          cat ./scripts/add-workflow.sh
+
+      - name: run multi-gitter
+        run: |
+          multi-gitter run ./scripts/add-workflow.sh \
+            --repo "${{ steps.issue-parser.outputs.issueparser_repositories }}" \
+            --branch "actions-onboarding" \
+            --message "ci: onboarding to actions" \
+            --config ./multi-gitter-config.yml
 
       # - name: Add created label and close issue
       #   if: ${{ success() }}

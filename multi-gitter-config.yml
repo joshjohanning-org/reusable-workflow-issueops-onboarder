@@ -1,0 +1,6 @@
+pr-title: Onboarding to GitHub Actions
+pr-body: |
+  This pull request was created by the GitHub Actions Onboarding workflow.
+  
+  It does a bunch of stuff, including:
+  - Adds a new workflow to the repository

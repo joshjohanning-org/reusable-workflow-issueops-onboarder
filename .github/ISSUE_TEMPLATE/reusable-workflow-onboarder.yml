@@ -26,7 +26,6 @@ body:
       options:
         - PLEASE SELECT ONE
         - docker
-        - terraform
         - java
     validations:
       required: true
