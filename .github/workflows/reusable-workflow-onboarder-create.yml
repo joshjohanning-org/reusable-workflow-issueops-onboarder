@@ -166,7 +166,6 @@ jobs:
             ${statusLog}
             \`\`\`
 
-            // Visit the following link for the [pull request](https://github.com/${{ env.REPO_NAME }}/pull/$VARIABLE)
             `
 
             await github.rest.issues.createComment({
