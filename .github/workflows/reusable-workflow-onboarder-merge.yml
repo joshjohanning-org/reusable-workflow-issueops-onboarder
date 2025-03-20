@@ -120,7 +120,6 @@ jobs:
           script: |
             // Construct the comment body
             let commentBody = `🚀 Actions onboarding pull request(s) merged. Run the \`.status\` command next for the statuses, or [action logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).\n`;
-            commentBody += formattedLines.join('\n');
 
             // Post the comment
             await github.rest.issues.createComment({
