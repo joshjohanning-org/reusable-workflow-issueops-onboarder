@@ -35,9 +35,11 @@ jobs:
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
 
+      # setting as env variables to avoid potential script injection
       - name: Set env vars
-        run: | 
-          echo "REPO_NAME=${{ steps.issue-parser.outputs.issueparser_repo_name }}" >> $GITHUB_ENV
+        run: |
+          echo "BUSINESS_UNIT=${{ steps.issue-parser.outputs.issueparser_business_unit }}" >> $GITHUB_ENV
+          echo "REPOSITORIES=${{ steps.issue-parser.outputs.issueparser_repositories }}" >> $GITHUB_ENV
           echo "REPO_LANGUAGE=${{ steps.issue-parser.outputs.issueparser_repo_language }}" >> $GITHUB_ENV
           echo "OTHER_CONFIGURATION=${{ steps.issue-parser.outputs.issueparser_other_configuration }}" >> $GITHUB_ENV
 
@@ -47,11 +49,15 @@ jobs:
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
+            // Get current date in YYYY-MM-DD format
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            
             await github.rest.issues.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              title: `🚀 Actions onboarding: ${process.env.REPO_NAME}`
+              title: `🚀 Actions onboarding: ${process.env.BUSINESS_UNIT} (${formattedDate})`
             })
 
       # TODO: modify YAML file accordingly (for the reusable workflow)
@@ -60,6 +66,38 @@ jobs:
       # TODO: create pull request - include any TODOs remaining for user (and tag them in the PR / add as an assignee)
       # TODO: provide link to PR back as a comment in the issue created here
       # TODO: ceate a Copilot custom instructions file and PR it the repo also? `.github/copilot-instructions.md`
+
+
+      - name: download and install multi-gitter
+        run: |
+          curl -s https://raw.githubusercontent.com/lindell/multi-gitter/master/install.sh | sh
+          multi-gitter version
+
+      - name: Build multi-gitter config
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const repositories = process.env.REPOSITORIES.split(',').map(repo => repo.trim());
+            const configContent = `repo:\n` + repositories.map(repo => `  - ${repo}`).join('\n');
+            fs.writeFileSync('multi-gitter-config.yml', configContent);
+
+        env:
+          REPOSITORIES: ${{ steps.parse-issue-body.outputs.issueparser_repositories }}
+
+      - name: debug
+        run: cat multi-gitter-config.yml
+
+      # - name: run multi-gitter
+      #   run: |
+      #     multi-gitter run \
+      #       --repo "${{ steps.issue-parser.outputs.issueparser_repositories }}" \
+      #       --branch "actions-onboarding" \
+      #       --message "Onboarding to Actions" \
+      #       --template .github/workflows/reusable-workflow-onboarder-prepare.yml \
+      #       --config .github/multi-gitter-config.yml
+      #       --config-branch "actions-onboarding" \
+      #       --config-message "Onboarding to Actions"
 
       - name: Add created label and close issue
         if: ${{ success() }}
@@ -85,7 +123,7 @@ jobs:
             let commentBody
             commentBody = `🚀 Actions onboarding pull request created.
 
-            Visit the following link for the [pull request](https://github.com/${{ env.REPO_NAME }}/pull/$VARIABLE)
+            // Visit the following link for the [pull request](https://github.com/${{ env.REPO_NAME }}/pull/$VARIABLE)
             `
 
             await github.rest.issues.createComment({

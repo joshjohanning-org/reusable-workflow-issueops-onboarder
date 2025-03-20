@@ -36,9 +36,11 @@ jobs:
         with:
           template-path: .github/ISSUE_TEMPLATE/reusable-workflow-onboarder.yml
 
+      # setting as env variables to avoid potential script injection
       - name: Set env vars
-        run: | 
-          echo "REPO_NAME=${{ steps.issue-parser.outputs.issueparser_repo_name }}" >> $GITHUB_ENV
+        run: |
+          echo "BUSINESS_UNIT=${{ steps.issue-parser.outputs.issueparser_business_unit }}" >> $GITHUB_ENV
+          echo "REPOSITORIES=${{ steps.issue-parser.outputs.issueparser_repositories }}" >> $GITHUB_ENV
           echo "REPO_LANGUAGE=${{ steps.issue-parser.outputs.issueparser_repo_language }}" >> $GITHUB_ENV
           echo "OTHER_CONFIGURATION=${{ steps.issue-parser.outputs.issueparser_other_configuration }}" >> $GITHUB_ENV
 
@@ -47,11 +49,15 @@ jobs:
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
+            // Get current date in YYYY-MM-DD format
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            
             await github.rest.issues.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              title: `🚀 Actions onboarding: ${process.env.REPO_NAME}`
+              title: `🚀 Actions onboarding: ${process.env.BUSINESS_UNIT} (${formattedDate})`
             })
 
       - name: Post prepare message
@@ -59,11 +65,18 @@ jobs:
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
+            const numberOfRepositories = process.env.REPOSITORIES.trim().split('\n').length
+
             let commentBody
             commentBody = `👋 Thank you for opening this new repo issue, @${{ github.actor }}.
 
-            The following has been parsed from your issue body:
-            - The **repo name** is set to be: **\`${{ env.REPO_NAME }}\`**
+            The following **${numberOfRepositories} repositories** have been parsed from your issue body:
+          
+            \`\`\`
+            ${{ env.REPOSITORIES }}
+            \`\`\`
+
+            - The **business unit** is set to be: **\`${{ env.BUSINESS_UNIT }}\`**
             - The **repo language** is set to be: **\`${{ env.REPO_LANGUAGE }}\`**
             - The **other configuration** setting is set to be: **\`${{ env.OTHER_CONFIGURATION }}\`**
 

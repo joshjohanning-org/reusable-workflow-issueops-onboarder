@@ -5,9 +5,18 @@ labels: ["actions"]
 body:
   - type: input
     attributes:
-      label: Repo Name
-      description: Enter in the name of the repository in GitHub in the format of ORG-NAME/REPO-NAME
-      placeholder: joshjohanning-org/my-repo-name
+      label: Business Unit
+      description: Enter in the name of the business unit/team
+      placeholder: finance-it
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Repositories
+      description: Enter in the name of the repository name, 1 per line, in the format of ORG-NAME/REPO-NAME
+      placeholder: | 
+        joshjohanning-org/my-repo-name
+        joshjohanning-org/my-other-repo-name
     validations:
       required: true
   - type: dropdown
@@ -18,7 +27,7 @@ body:
         - PLEASE SELECT ONE
         - docker
         - terraform
-        - java (todo)
+        - java
     validations:
       required: true
   - type: checkboxes
