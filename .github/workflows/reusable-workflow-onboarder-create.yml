@@ -89,7 +89,7 @@ jobs:
 
             // Build the multi-gitter-config-repos.yml file
             const repositories = process.env.REPOSITORIES.split('\n').map(repo => repo.trim()).filter(repo => repo !== '');
-            const reposConfigContent = `repo:\n` + repositories.map(repo => `  - ${repo}`).join('\n');
+            const reposConfigContent = `\nrepo:\n` + repositories.map(repo => `  - ${repo}`).join('\n');
             fs.writeFileSync('multi-gitter-config-repos.yml', reposConfigContent);
 
             // Append the contents of multi-gitter-config-repos.yml to multi-gitter-config.yml
