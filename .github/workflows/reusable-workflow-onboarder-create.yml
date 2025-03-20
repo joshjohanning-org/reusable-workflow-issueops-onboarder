@@ -122,15 +122,19 @@ jobs:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           multi-gitter run ./scripts/add-workflow.sh \
-            --config ./multi-gitter-config.yml
+            --config ./multi-gitter-config.yml \
+            --log-file ./multi-gitter.log
 
       - name: run multi-gitter status
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           multi-gitter status \
-            --log-file ./multi-gitter-status.log \
+            --output multi-gitter-status.log /
             --config ./multi-gitter-config.yml
+
+      - name: print run log
+        run: cat /multi-gitter.log
 
       - name: print status
         run: cat multi-gitter-status.log
