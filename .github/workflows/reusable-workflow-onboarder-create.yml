@@ -129,8 +129,11 @@ jobs:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           multi-gitter status \
-            --config ./multi-gitter-config.yml \
             --log-file ./multi-gitter-status.log
+            --config ./multi-gitter-config.yml
+
+      - name: print status
+        run: cat multi-gitter-status.log
 
       # - name: Add created label and close issue
       #   if: ${{ success() }}
