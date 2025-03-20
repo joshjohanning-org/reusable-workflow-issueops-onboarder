@@ -97,6 +97,7 @@ jobs:
         run: |
           multi-gitter status \
             --config ./multi-gitter-config.yml \
+            --branch actions-onboarding-${{ github.event.issue.number}} \
             --output ./multi-gitter.log
 
       - name: print run log
@@ -171,9 +172,3 @@ jobs:
         with:
           name: multi-gitter-config
           path: multi-gitter-config.yml
-
-      - name: publish script
-        uses: actions/upload-artifact@v4
-        with:
-          name: multi-gitter-script
-          path: ./scripts/add-workflow.sh

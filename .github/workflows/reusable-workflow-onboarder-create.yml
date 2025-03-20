@@ -119,6 +119,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           multi-gitter run ./scripts/add-workflow.sh \
+            --branch actions-onboarding-${{ github.event.issue.number}} \
             --config ./multi-gitter-config.yml \
             --output ./multi-gitter.log
 
