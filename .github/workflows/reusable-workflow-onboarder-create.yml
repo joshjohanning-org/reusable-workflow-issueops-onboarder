@@ -79,7 +79,7 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const repositories = process.env.REPOSITORIES.split(',').map(repo => repo.trim());
+            const repositories = process.env.REPOSITORIES.split('\n').map(repo => repo.trim()).filter(repo => repo !== '');
             const configContent = `repo:\n` + repositories.map(repo => `  - ${repo}`).join('\n');
             fs.writeFileSync('multi-gitter-config.yml', configContent);
 
