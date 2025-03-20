@@ -109,6 +109,10 @@ jobs:
 
           sed -i "s|\$1|${{ github.workspace }}/reusable-workflows/.github/workflows/$workflow|g" ./scripts/add-workflow.sh
 
+      - name: update script for copilot instructions
+        run: |
+          sed -i "s|\$2|${{ github.workspace }}/.github/copilot-instructions.md|g" ./scripts/add-workflow.sh
+
       - name: print script
         run: |
           pwd

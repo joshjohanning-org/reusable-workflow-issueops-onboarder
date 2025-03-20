@@ -51,6 +51,10 @@ pr-body: |
     - Notify the team on Slack or via email if the workflow fails.
   8. **Error Handling**:
     - Ensure the workflow fails gracefully with clear error messages.
+  9. You should also look at the existing workflows in `.github/workflows` as a reference.
+  10. Where possible, use reusable workflows to avoid duplication and improve maintainability.
+  11. Where possible, use internal Actions vs. marketplace Actions to avoid security issues.
+  12. When referring to marketplace Actions, always use a specific commit SHA or version tag instead of a tag or branch name for security reasons.
   ```
   </details>
 assignees:
