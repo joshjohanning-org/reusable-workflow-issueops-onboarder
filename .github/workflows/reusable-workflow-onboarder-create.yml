@@ -119,7 +119,6 @@ jobs:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           multi-gitter run ./scripts/add-workflow.sh \
-            --branch actions-onboarding-${{ github.event.issue.number}} \
             --config ./multi-gitter-config.yml \
             --output ./multi-gitter.log
 
@@ -171,7 +170,7 @@ jobs:
             }).filter(link => link !== null);
 
             // Construct the comment body
-            let commentBody = `🚀 Actions onboarding pull request(s) created.\n\n`;
+            let commentBody = `🚀 No failures reported. See below for PRs created and/or repo(s) with errors:\n\n`;
 
             if (successLinks.length > 0) {
               commentBody += `### Successful Runs:\n${successLinks.join('\n')}\n\n`;
