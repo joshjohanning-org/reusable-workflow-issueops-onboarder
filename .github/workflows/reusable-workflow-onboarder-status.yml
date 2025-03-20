@@ -1,0 +1,192 @@
+name: reusable-workflow-onboarder-create
+
+run-name: '🚀 Actions onboarding create: Issue #${{ github.event.issue.number }} by @${{ github.actor }}'
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  reusable-workflow-onboarder-create:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issue_comment' &&
+      (startsWith(github.event.comment.body, '/status') &&
+      contains(github.event.issue.labels.*.name, 'actions'))
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Write GitHub context to log
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
+      - uses: stefanbuck/github-issue-parser@v3
+        id: issue-parser
+        with:
+          template-path: .github/ISSUE_TEMPLATE/reusable-workflow-onboarder.yml
+
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: checkout reusable workflow repo
+        uses: actions/checkout@v4
+        with:
+          repository: joshjohanning-org/reusable-workflows
+          token: ${{ steps.app-token.outputs.token }}
+          path: reusable-workflows
+
+      # setting as env variables to avoid potential script injection
+      - name: Set env vars
+        run: |
+          echo "BUSINESS_UNIT=${{ steps.issue-parser.outputs.issueparser_business_unit }}" >> $GITHUB_ENV
+          echo "REPO_LANGUAGE=${{ steps.issue-parser.outputs.issueparser_repo_language }}" >> $GITHUB_ENV
+          echo "OTHER_CONFIGURATION=${{ steps.issue-parser.outputs.issueparser_other_configuration }}" >> $GITHUB_ENV
+
+      # doing this again in case someone else renamed the issue
+      - name: Rename issue
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            // Get current date in YYYY-MM-DD format
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              title: `🚀 Actions onboarding: ${process.env.BUSINESS_UNIT} (${formattedDate})`
+            })
+
+      - name: download and install multi-gitter
+        run: |
+          curl -s https://raw.githubusercontent.com/lindell/multi-gitter/master/install.sh | sh
+          multi-gitter version
+
+      - name: Build multi-gitter config
+        uses: actions/github-script@v7
+        env:
+          REPOSITORIES: ${{ steps.issue-parser.outputs.issueparser_repositories }}
+        with:
+          script: |
+            const fs = require('fs');
+
+            // Build the multi-gitter-config-repos.yml file
+            const repositories = process.env.REPOSITORIES.split('\n').map(repo => repo.trim()).filter(repo => repo !== '');
+            const reposConfigContent = `\nrepo:\n` + repositories.map(repo => `  - ${repo}`).join('\n');
+            fs.writeFileSync('multi-gitter-config-repos.yml', reposConfigContent);
+
+            // Append the contents of multi-gitter-config-repos.yml to multi-gitter-config.yml
+            const reposConfig = fs.readFileSync('multi-gitter-config-repos.yml', 'utf8');
+            fs.appendFileSync('multi-gitter-config.yml', reposConfig);
+
+      - name: print config
+        run: cat multi-gitter-config.yml
+
+      - name: run multi-gitter status
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          multi-gitter status \
+            --config ./multi-gitter-config.yml \
+            --output ./multi-gitter.log
+
+      - name: print run log
+        run: cat multi-gitter.log
+
+      # - name: Add created label and close issue
+      #   if: ${{ success() }}
+      #   uses: actions/github-script@v6
+      #   with:
+      #     github-token: ${{ steps.app-token.outputs.token }}
+      #     script: |
+      #       await github.rest.issues.update({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         issue_number: context.issue.number,
+      #         labels: ["created", "actions"],
+      #         state: "closed"
+      #       })
+
+      - name: Post successful message
+        uses: actions/github-script@v6
+        if: ${{ success() }}
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const fs = require('fs');
+
+            // Read the contents of the multi-gitter.log file
+            const runLog = fs.readFileSync('./multi-gitter.log', 'utf8');
+
+            // Parse the log for errors
+            const errorLines = runLog.split('\n').filter(line => line.startsWith('Could not push changes:'));
+            const errorRepos = errorLines.map(line => {
+              const match = line.match(/Could not push changes: (.+?):$/);
+              return match ? `- ${match[1]}` : null;
+            }).filter(repo => repo !== null);
+
+            // Parse the log for successful runs
+            const successLines = runLog.split('\n').filter(line => line.startsWith('  '));
+            const successLinks = successLines.map(line => {
+              const match = line.match(/^\s+(.+?)\s+#(\d+)/);
+              if (match) {
+                const repo = match[1];
+                const prNumber = match[2];
+                return `- https://github.com/${repo}/pull/${prNumber}`;
+              }
+              return null;
+            }).filter(link => link !== null);
+
+            // Construct the comment body
+            let commentBody = `🚀 Actions onboarding pull request(s) status.\n\n`;
+
+            if (successLinks.length > 0) {
+              commentBody += `### Successful Runs:\n${successLinks.join('\n')}\n\n`;
+            }
+
+            if (errorRepos.length > 0) {
+              commentBody += `### Errors:\n${errorRepos.join('\n')}\n\n`;
+            }
+
+            // Post the comment
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: commentBody.replace(/  +/g, '')
+            });
+
+      - name: Post failure message
+        if: ${{ failure() }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            let commentBody
+            commentBody = `😢 The onboarding to Actions workflow failed. Please review the [action logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more information.`
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: commentBody.replace(/  +/g, '')
+            })
+
+      - name: publish config
+        uses: actions/upload-artifact@v4
+        with:
+          name: multi-gitter-config
+          path: multi-gitter-config.yml
+
+      - name: publish script
+        uses: actions/upload-artifact@v4
+        with:
+          name: multi-gitter-script
+          path: ./scripts/add-workflow.sh
