@@ -30,7 +30,7 @@ if [ -f "$FILE_COPILOT" ]; then
   echo "File $FILE_COPILOT updated."
 else
   echo "File $FILE_COPILOT does not exist. Creating from $REPLACE_WITH_FILE_COPILOT...."
-  mkdir -p ./.github/workflows
-  cp $REPLACE_WITH_FILE_COPILOT $FILE
+  mkdir -p ./.github
+  cp $REPLACE_WITH_FILE_COPILOT $FILE_COPILOT
   echo "File $FILE_COPILOT created."
 fi
