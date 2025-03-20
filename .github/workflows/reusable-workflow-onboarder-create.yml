@@ -173,7 +173,7 @@ jobs:
             }).filter(link => link !== null);
 
             // Construct the comment body
-            let commentBody = `🚀 Actions onboarding pull request created.\n\n`;
+            let commentBody = `🚀 Actions onboarding pull request(s) created.\n\n`;
 
             if (successLinks.length > 0) {
               commentBody += `### Successful Runs:\n${successLinks.join('\n')}\n\n`;
