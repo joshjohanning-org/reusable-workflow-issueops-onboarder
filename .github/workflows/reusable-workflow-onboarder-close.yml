@@ -134,7 +134,7 @@ jobs:
               if (match) {
                 const repo = match[1].trim();
                 const prNumber = match[2].trim();
-                return `- [${repo} #${prNumber}](https://github.com/${repo}/pull/${prNumber})`;
+                return `- [${repo} #${prNumber}](${{ github.SERVER_URL }}/${repo}/pull/${prNumber})`;
               }
               return null;
             }).filter(line => line !== null);
@@ -142,6 +142,7 @@ jobs:
             // Construct the comment body
             let commentBody = `🙅 Actions onboarding pull request(s) closed:\n\n`;
             commentBody += formattedLines.join('\n');
+            commentBody += `\n\n_See the [action logs](${{ github.SERVER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more information._\n\n`;
 
             // Post the comment
             await github.rest.issues.createComment({
@@ -157,7 +158,7 @@ jobs:
         with:
           script: |
             let commentBody
-            commentBody = `😢 The onboarding to Actions workflow failed. Please review the [action logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more information.`
+            commentBody = `😢 The onboarding to Actions workflow failed. Please review the [action logs](${{ github.SERVER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more information.`
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,

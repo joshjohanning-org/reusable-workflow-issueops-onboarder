@@ -169,21 +169,28 @@ jobs:
               if (match) {
                 const repo = match[1];
                 const prNumber = match[2];
-                return `- https://github.com/${repo}/pull/${prNumber}`;
+                return `- ${{ github.SERVER_URL }}/${repo}/pull/${prNumber}`;
               }
               return null;
             }).filter(link => link !== null);
 
             // Construct the comment body
-            let commentBody = `✅ No workflow errors reported. See below for PRs created and/or repo(s) with errors, or refer to the [action logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).\n`;
+            let commentBody = `✅ No workflow errors reported. Links to PRs will be noted below along with any failures.\n`;
 
+            // Always include the "PRs created" section
+            commentBody += `### PRs created:\n`;
             if (successLinks.length > 0) {
-              commentBody += `### PRs created:\n${successLinks.join('\n')}\n\n`;
+              commentBody += `${successLinks.join('\n')}\n\n`;
+            } else {
+              commentBody += `- No pull requests were created in this [workflow run](${{ github.SERVER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}). \n\n`;
             }
 
+            // Include errors if any
             if (errorRepos.length > 0) {
               commentBody += `### Errors:\n${errorRepos.join('\n')}\n\n`;
             }
+
+            commentBody += `\n\n_See the [action logs](${{ github.SERVER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more information._\n\n`;
 
             // Post the comment
             await github.rest.issues.createComment({
@@ -199,7 +206,7 @@ jobs:
         with:
           script: |
             let commentBody
-            commentBody = `😢 The onboarding to Actions workflow failed. Please review the [action logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more information.`
+            commentBody = `😢 The onboarding to Actions workflow failed. Please review the [action logs](${{ github.SERVER_URL }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more information.`
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
