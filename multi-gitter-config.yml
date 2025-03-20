@@ -25,6 +25,7 @@ pr-body: |
   <details>
   <summary>Expand for a sample Copilot prompt we customized</summary>
   <br>
+  
   ```
   I need to create a GitHub Actions workflow for my repository. Here are the standards and requirements for the workflow:
 
