@@ -175,7 +175,7 @@ jobs:
             }).filter(link => link !== null);
 
             // Construct the comment body
-            let commentBody = `✅ No workflow errors reported. Links to PRs will be noted below along with any failures.\n`;
+            let commentBody = `✅ Onboarding workflow successfully ran. Links to PRs will be listed below along with repositories that encountered errors.\n`;
 
             // Always include the "PRs created" section
             commentBody += `### PRs created:\n`;
