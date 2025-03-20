@@ -122,8 +122,15 @@ jobs:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           multi-gitter run ./scripts/add-workflow.sh \
-            --branch "actions-onboarding" \
             --config ./multi-gitter-config.yml
+
+      - name: run multi-gitter status
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          multi-gitter status ./scripts/add-workflow.sh \
+            --config ./multi-gitter-config.yml \
+            --log-file ./multi-gitter-status.log
 
       # - name: Add created label and close issue
       #   if: ${{ success() }}
@@ -146,8 +153,18 @@ jobs:
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
+            const fs = require('fs');
+
+            // Read the contents of the multi-gitter-status.log file
+            const statusLog = fs.readFileSync('./multi-gitter-status.log', 'utf8');
+
             let commentBody
             commentBody = `🚀 Actions onboarding pull request created.
+
+            Status:
+            \`\`\`
+            ${statusLog}
+            \`\`\`
 
             // Visit the following link for the [pull request](https://github.com/${{ env.REPO_NAME }}/pull/$VARIABLE)
             `

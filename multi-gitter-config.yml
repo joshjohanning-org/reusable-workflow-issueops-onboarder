@@ -1,11 +1,14 @@
+branch: actions-onboarding
+commit-message: 'ci: onboarding to actions'
+author-email: 149130343+josh-issueops-bot[bot]@users.noreply.github.com
+author-name: josh-issueops-bot[bot]
 pr-title: Onboarding to GitHub Actions
 pr-body: |
   This pull request was created by the GitHub Actions Onboarding workflow.
   
   It does a bunch of stuff, including:
   - Adds a new workflow to the repository
-commit-message: 'ci: onboarding to actions'
-author-email: 149130343+josh-issueops-bot[bot]@users.noreply.github.com
-author-name: josh-issueops-bot[bot]
 assignees:
   - joshjohanning
+plain-output: true
+conflict-strategy: replace
