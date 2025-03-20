@@ -169,3 +169,15 @@ jobs:
               issue_number: context.issue.number,
               body: commentBody.replace(/  +/g, '')
             })
+
+      - name: publish config
+        uses: actions/upload-artifact@v4
+        with:
+          name: multi-gitter-config
+          path: multi-gitter-config.yml
+
+      - name: publish script
+        uses: actions/upload-artifact@v4
+        with:
+          name: multi-gitter-script
+          path: ./scripts/add-workflow.sh
