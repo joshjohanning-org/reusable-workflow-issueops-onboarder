@@ -125,19 +125,8 @@ jobs:
             --config ./multi-gitter-config.yml \
             --output ./multi-gitter.log
 
-      - name: run multi-gitter status
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: |
-          multi-gitter status \
-            --output multi-gitter-status.log \
-            --config ./multi-gitter-config.yml
-
       - name: print run log
         run: cat multi-gitter.log
-
-      - name: print status
-        run: cat multi-gitter-status.log
 
       # - name: Add created label and close issue
       #   if: ${{ success() }}
@@ -162,15 +151,27 @@ jobs:
           script: |
             const fs = require('fs');
 
-            // Read the contents of the multi-gitter-status.log file
-            const statusLog = fs.readFileSync('./multi-gitter-status.log', 'utf8');
+            // Read the contents of the multi-gitter.log file
+            const runLog = fs.readFileSync('./multi-gitter.log', 'utf8');
+
+            // Parse the log and construct hyperlinks
+            const lines = runLog.split('\n').filter(line => line.startsWith('  '));
+            const links = lines.map(line => {
+              const match = line.match(/^\s+(.+?)\s+#(\d+)/);
+              if (match) {
+                const repo = match[1];
+                const prNumber = match[2];
+                return `- [${repo}](https://github.com/${repo}/pull/${prNumber})`;
+              }
+              return null;
+            }).filter(link => link !== null);
 
             let commentBody
             commentBody = `🚀 Actions onboarding pull request created.
 
             Status:
             \`\`\`
-            ${statusLog}
+            ${links.join('\n')}
             \`\`\`
 
             `
