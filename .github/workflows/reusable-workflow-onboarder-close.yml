@@ -1,6 +1,6 @@
 name: reusable-workflow-onboarder-close
 
-run-name: '🚀 Actions onboarding create: Issue #${{ github.event.issue.number }} by @${{ github.actor }}'
+run-name: '🚀 Actions onboarding close: Issue #${{ github.event.issue.number }} by @${{ github.actor }}'
 
 on:
   issue_comment:
