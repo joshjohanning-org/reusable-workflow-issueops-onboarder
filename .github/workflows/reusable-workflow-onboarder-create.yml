@@ -83,7 +83,7 @@ jobs:
             const configContent = `repo:\n` + repositories.map(repo => `  - ${repo}`).join('\n');
             fs.writeFileSync('multi-gitter-config.yml', configContent);
 
-      - name: debug
+      - name: print config
         run: cat multi-gitter-config.yml
 
       # - name: run multi-gitter
@@ -97,19 +97,19 @@ jobs:
       #       --config-branch "actions-onboarding" \
       #       --config-message "Onboarding to Actions"
 
-      - name: Add created label and close issue
-        if: ${{ success() }}
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ steps.app-token.outputs.token }}
-          script: |
-            await github.rest.issues.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: ["created", "actions"],
-              state: "closed"
-            })
+      # - name: Add created label and close issue
+      #   if: ${{ success() }}
+      #   uses: actions/github-script@v6
+      #   with:
+      #     github-token: ${{ steps.app-token.outputs.token }}
+      #     script: |
+      #       await github.rest.issues.update({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         issue_number: context.issue.number,
+      #         labels: ["created", "actions"],
+      #         state: "closed"
+      #       })
 
       # TODO: extract the pull request ID and add to the URL
       - name: Post successful message
