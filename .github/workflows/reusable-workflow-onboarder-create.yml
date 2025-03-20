@@ -128,7 +128,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          multi-gitter status ./scripts/add-workflow.sh \
+          multi-gitter status \
             --config ./multi-gitter-config.yml \
             --log-file ./multi-gitter-status.log
 
