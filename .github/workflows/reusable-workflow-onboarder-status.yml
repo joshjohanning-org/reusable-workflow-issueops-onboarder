@@ -97,7 +97,7 @@ jobs:
         run: |
           multi-gitter status \
             --config ./multi-gitter-config.yml \
-            --output ./multi-gitter.log
+            --log-file ./multi-gitter.log
 
       - name: print run log
         run: cat multi-gitter.log
