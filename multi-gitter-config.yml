@@ -25,7 +25,7 @@ pr-body: |
   <details>
   <summary>Expand for a sample Copilot prompt we customized</summary>
   <br>
-  
+
   ```
   I need to create a GitHub Actions workflow for my repository. Here are the standards and requirements for the workflow:
 
@@ -55,5 +55,10 @@ pr-body: |
   </details>
 assignees:
   - joshjohanning
+# merge types in order of preference, in case one is not available
+merge-type:
+  - squash
+  - merge
+  - rebase
 plain-output: true
 conflict-strategy: replace
