@@ -129,7 +129,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           multi-gitter status \
-            --log-file ./multi-gitter-status.log
+            --log-file ./multi-gitter-status.log \
             --config ./multi-gitter-config.yml
 
       - name: print status
