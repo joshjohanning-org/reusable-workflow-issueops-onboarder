@@ -86,11 +86,17 @@ jobs:
             Add the following comment to this issue in order to start the onboarding process onto Actions:
           
             \`\`\`
-            /onboard-to-actions
+            .onboard
             \`\`\`
             
             This will configure a workflow for you and create a pull request in the repository you have selected. After running, any follow-up requirements will be provided to you in the linked pull request!
             
+            There are two other commands you can use to manage the onboarding process:
+
+            \`\`\`
+            .status
+            .merge
+            \`\`\`
             `
 
             await github.rest.issues.createComment({

@@ -10,7 +10,7 @@ jobs:
   reusable-workflow-onboarder-create:
     runs-on: ubuntu-latest
     if: github.event_name == 'issue_comment' &&
-      (startsWith(github.event.comment.body, '/onboard-to-actions') &&
+      (startsWith(github.event.comment.body, '.onboard') &&
       contains(github.event.issue.labels.*.name, 'actions'))
     permissions:
       contents: read
