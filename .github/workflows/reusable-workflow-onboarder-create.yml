@@ -110,7 +110,11 @@ jobs:
             exit 1
           fi
 
-          sed  "s|\$1|./reusable-workflows/.github/workflows/$workflow|g" ./scripts/add-workflow.sh
+          sed  "s|\$1|${{ github.workspace }}/reusable-workflows/.github/workflows/$workflow|g" ./scripts/add-workflow.sh
+
+      - name: print script
+        run: |
+          pwd
           cat ./scripts/add-workflow.sh
 
       - name: run multi-gitter
