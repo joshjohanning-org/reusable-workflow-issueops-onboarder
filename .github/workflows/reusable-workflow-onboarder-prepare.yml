@@ -40,7 +40,6 @@ jobs:
       - name: Set env vars
         run: |
           echo "BUSINESS_UNIT=${{ steps.issue-parser.outputs.issueparser_business_unit }}" >> $GITHUB_ENV
-          echo "REPOSITORIES=${{ steps.issue-parser.outputs.issueparser_repositories }}" >> $GITHUB_ENV
           echo "REPO_LANGUAGE=${{ steps.issue-parser.outputs.issueparser_repo_language }}" >> $GITHUB_ENV
           echo "OTHER_CONFIGURATION=${{ steps.issue-parser.outputs.issueparser_other_configuration }}" >> $GITHUB_ENV
 
@@ -62,6 +61,8 @@ jobs:
 
       - name: Post prepare message
         uses: actions/github-script@v6
+        env:
+          REPOSITORIES: ${{ steps.issue-parser.outputs.issueparser_repositories }}
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
@@ -73,7 +74,7 @@ jobs:
             The following **${numberOfRepositories} repositories** have been parsed from your issue body:
           
             \`\`\`
-            ${{ env.REPOSITORIES }}
+            ${process.env.REPOSITORIES}
             \`\`\`
 
             - The **business unit** is set to be: **\`${{ env.BUSINESS_UNIT }}\`**
