@@ -35,9 +35,9 @@ pr-body: |
     - It should also trigger on `pull_request` events targeting the `main` branch.
   3. **Environment Matrix**:
     - The workflow should support a matrix of environments (e.g., Node.js versions, Python versions, etc.).
-    - For example, if it's a Node.js project, test against Node.js versions `14`, `16`, and `18`.
+    - For example, if it's a Node.js project, test against Node.js versions `18`, `20`, and `22`.
   4. **Steps**:
-    - Checkout the repository using `actions/checkout@v3`.
+    - Checkout the repository using `actions/checkout@v4`.
     - Set up the required environment (e.g., Node.js, Python, Docker, etc.).
     - Install dependencies using the appropriate package manager (e.g., `npm install`, `pip install -r requirements.txt`).
     - Run tests using the standard testing framework for the language (e.g., `npm test`, `pytest`).
@@ -46,7 +46,7 @@ pr-body: |
     - Use secrets stored in GitHub Actions (e.g., `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`) for secure operations.
     - Use environment variables for configuration where applicable.
   6. **Artifacts**:
-    - If the workflow generates build artifacts, upload them using `actions/upload-artifact@v3`.
+    - If the workflow generates build artifacts, upload them using `actions/upload-artifact@v4`.
   7. **Notifications**:
     - Notify the team on Slack or via email if the workflow fails.
   8. **Error Handling**:
