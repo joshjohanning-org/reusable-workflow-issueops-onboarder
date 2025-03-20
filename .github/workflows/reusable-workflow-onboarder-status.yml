@@ -142,7 +142,7 @@ jobs:
             });
 
             // Construct the comment body
-            let commentBody = `🚀 Actions onboarding pull request(s) status:\n\n`;
+            let commentBody = `⏳ Actions onboarding pull request(s) status:\n\n`;
             commentBody += formattedLines.join('\n');
 
             // Post the comment

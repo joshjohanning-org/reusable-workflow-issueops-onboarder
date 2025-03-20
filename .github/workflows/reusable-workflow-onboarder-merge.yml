@@ -140,7 +140,7 @@ jobs:
             }).filter(line => line !== null);
 
             // Construct the comment body
-            let commentBody = `🚀 Actions onboarding pull request(s) merged:\n\n`;
+            let commentBody = `⛙ Actions onboarding pull request(s) merged:\n\n`;
             commentBody += formattedLines.join('\n');
 
             // Post the comment
