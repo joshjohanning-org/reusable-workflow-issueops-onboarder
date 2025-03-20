@@ -170,7 +170,7 @@ jobs:
             }).filter(link => link !== null);
 
             // Construct the comment body
-            let commentBody = `🚀 No workflow errors reported. See below for PRs created and/or repo(s) with errors:\n\n`;
+            let commentBody = `🚀 No workflow errors reported. See below for PRs created and/or repo(s) with errors, or refer to the [action logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).\n`;
 
             if (successLinks.length > 0) {
               commentBody += `### Successful Runs:\n${successLinks.join('\n')}\n\n`;
