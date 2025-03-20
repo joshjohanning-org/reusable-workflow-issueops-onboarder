@@ -167,7 +167,7 @@ jobs:
               if (match) {
                 const repo = match[1];
                 const prNumber = match[2];
-                return `- [${repo}](https://github.com/${repo}/pull/${prNumber})`;
+                return `- https://github.com/${repo}/pull/${prNumber}`;
               }
               return null;
             }).filter(link => link !== null);
