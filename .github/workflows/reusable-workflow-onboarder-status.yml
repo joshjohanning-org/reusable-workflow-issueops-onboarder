@@ -1,4 +1,4 @@
-name: reusable-workflow-onboarder-create
+name: reusable-workflow-onboarder-status
 
 run-name: '🚀 Actions onboarding create: Issue #${{ github.event.issue.number }} by @${{ github.actor }}'
 
