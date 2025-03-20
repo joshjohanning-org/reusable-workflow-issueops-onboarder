@@ -97,7 +97,7 @@ jobs:
         run: |
           multi-gitter merge \
             --branch actions-onboarding-${{ github.event.issue.number }} \
-            --config ./multi-gitter-config.yml | tee multi-gitter.log
+            --config ./multi-gitter-config.yml 2>&1 | tee multi-gitter.log
 
       - name: print run log
         run: cat multi-gitter.log
