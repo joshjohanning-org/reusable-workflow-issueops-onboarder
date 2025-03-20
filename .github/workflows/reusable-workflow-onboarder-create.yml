@@ -134,7 +134,7 @@ jobs:
             --config ./multi-gitter-config.yml
 
       - name: print run log
-        run: cat /multi-gitter.log
+        run: cat multi-gitter.log
 
       - name: print status
         run: cat multi-gitter-status.log
