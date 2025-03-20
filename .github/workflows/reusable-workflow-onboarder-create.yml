@@ -156,7 +156,7 @@ jobs:
             // Parse the log for errors
             const errorLines = runLog.split('\n').filter(line => line.startsWith('Could not push changes:'));
             const errorRepos = errorLines.map(line => {
-              const match = line.match(/:\s+(.+)/);
+              const match = line.match(/Could not push changes: (.+?):$/);
               return match ? `- ${match[1]}` : null;
             }).filter(repo => repo !== null);
 
