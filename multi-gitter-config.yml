@@ -4,3 +4,4 @@ pr-body: |
   
   It does a bunch of stuff, including:
   - Adds a new workflow to the repository
+commit-message: 'ci: onboarding to actions'

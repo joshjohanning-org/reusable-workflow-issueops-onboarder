@@ -35,7 +35,8 @@ jobs:
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
 
-      - uses: actions/checkout@v4
+      - name: checkout reusable workflow repo
+        uses: actions/checkout@v4
         with:
           repository: joshjohanning-org/reusable-workflows
           token: ${{ steps.app-token.outputs.token }}
@@ -117,7 +118,6 @@ jobs:
           multi-gitter run ./scripts/add-workflow.sh \
             --repo "${{ steps.issue-parser.outputs.issueparser_repositories }}" \
             --branch "actions-onboarding" \
-            --message "ci: onboarding to actions" \
             --config ./multi-gitter-config.yml
 
       # - name: Add created label and close issue
