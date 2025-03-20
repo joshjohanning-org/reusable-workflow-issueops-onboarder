@@ -96,6 +96,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           multi-gitter status \
+            --branch actions-onboarding-${{ github.event.issue.number }} \
             --config ./multi-gitter-config.yml \
             --output ./multi-gitter.log
 

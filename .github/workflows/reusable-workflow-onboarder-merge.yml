@@ -96,7 +96,11 @@ jobs:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           multi-gitter merge \
-            --config ./multi-gitter-config.yml
+            --branch actions-onboarding-${{ github.event.issue.number }} \
+            --config ./multi-gitter-config.yml | tee multi-gitter.log
+
+      - name: print run log
+        run: cat multi-gitter.log
 
       # - name: Add created label and close issue
       #   if: ${{ success() }}

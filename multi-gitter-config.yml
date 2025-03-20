@@ -1,4 +1,4 @@
-branch: actions-onboarding
+# branch: actions-onboarding # this is in workflows now; actions-onboarding-${{ github.event.issue.number }}
 commit-message: 'ci: onboarding to actions'
 author-email: 149130343+josh-issueops-bot[bot]@users.noreply.github.com
 author-name: josh-issueops-bot[bot]
