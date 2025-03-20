@@ -142,7 +142,6 @@ jobs:
       #         state: "closed"
       #       })
 
-      # TODO: extract the pull request ID and add to the URL
       - name: Post successful message
         uses: actions/github-script@v6
         if: ${{ success() }}
@@ -154,9 +153,16 @@ jobs:
             // Read the contents of the multi-gitter.log file
             const runLog = fs.readFileSync('./multi-gitter.log', 'utf8');
 
-            // Parse the log and construct hyperlinks
-            const lines = runLog.split('\n').filter(line => line.startsWith('  '));
-            const links = lines.map(line => {
+            // Parse the log for errors
+            const errorLines = runLog.split('\n').filter(line => line.startsWith('Could not push changes:'));
+            const errorRepos = errorLines.map(line => {
+              const match = line.match(/:\s+(.+)/);
+              return match ? `- ${match[1]}` : null;
+            }).filter(repo => repo !== null);
+
+            // Parse the log for successful runs
+            const successLines = runLog.split('\n').filter(line => line.startsWith('  '));
+            const successLinks = successLines.map(line => {
               const match = line.match(/^\s+(.+?)\s+#(\d+)/);
               if (match) {
                 const repo = match[1];
@@ -166,22 +172,24 @@ jobs:
               return null;
             }).filter(link => link !== null);
 
-            let commentBody
-            commentBody = `🚀 Actions onboarding pull request created.
+            // Construct the comment body
+            let commentBody = `🚀 Actions onboarding pull request created.\n\n`;
 
-            Status:
-            \`\`\`
-            ${links.join('\n')}
-            \`\`\`
+            if (successLinks.length > 0) {
+              commentBody += `### Successful Runs:\n${successLinks.join('\n')}\n\n`;
+            }
 
-            `
+            if (errorRepos.length > 0) {
+              commentBody += `### Errors:\n${errorRepos.join('\n')}\n\n`;
+            }
 
+            // Post the comment
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
               body: commentBody.replace(/  +/g, '')
-            })
+            });
 
       - name: Post failure message
         if: ${{ failure() }}
