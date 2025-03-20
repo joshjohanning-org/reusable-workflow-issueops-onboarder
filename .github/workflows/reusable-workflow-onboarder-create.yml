@@ -114,6 +114,8 @@ jobs:
           cat ./scripts/add-workflow.sh
 
       - name: run multi-gitter
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           multi-gitter run ./scripts/add-workflow.sh \
             --repo "${{ steps.issue-parser.outputs.issueparser_repositories }}" \
