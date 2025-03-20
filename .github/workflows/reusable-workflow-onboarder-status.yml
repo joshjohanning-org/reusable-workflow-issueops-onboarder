@@ -97,7 +97,7 @@ jobs:
         run: |
           multi-gitter status \
             --config ./multi-gitter-config.yml \
-            --log-file ./multi-gitter.log
+            --output ./multi-gitter.log
 
       - name: print run log
         run: cat multi-gitter.log
@@ -116,7 +116,7 @@ jobs:
       #         state: "closed"
       #       })
 
-      - name: Post successful message
+      - name: Post status message
         uses: actions/github-script@v6
         if: ${{ success() }}
         with:
@@ -127,42 +127,29 @@ jobs:
             // Read the contents of the multi-gitter.log file
             const runLog = fs.readFileSync('./multi-gitter.log', 'utf8');
 
-            // Parse the log for errors
-            const errorLines = runLog.split('\n').filter(line => line.startsWith('Could not push changes:'));
-            const errorRepos = errorLines.map(line => {
-              const match = line.match(/Could not push changes: (.+?):$/);
-              return match ? `- ${match[1]}` : null;
-            }).filter(repo => repo !== null);
-
-            // Parse the log for successful runs
-            const successLines = runLog.split('\n').filter(line => line.startsWith('  '));
-            const successLinks = successLines.map(line => {
-              const match = line.match(/^\s+(.+?)\s+#(\d+)/);
+            // Parse the log for all lines
+            const logLines = runLog.split('\n').filter(line => line.trim() !== '');
+            const formattedLines = logLines.map(line => {
+              const match = line.match(/^(.+?)\s+#(\d+):\s+(.*)$/);
               if (match) {
-                const repo = match[1];
-                const prNumber = match[2];
-                return `- https://github.com/${repo}/pull/${prNumber}`;
+                const repo = match[1].trim();
+                const prNumber = match[2].trim();
+                const status = match[3].trim();
+                return `- ${repo} [#${prNumber}](https://github.com/${repo}/pull/${prNumber}): ${status}`;
               }
-              return null;
-            }).filter(link => link !== null);
+              return `- ${line}`; // If the line doesn't match the expected format, include it as-is
+            });
 
             // Construct the comment body
-            let commentBody = `🚀 Actions onboarding pull request(s) status.\n\n`;
-
-            if (successLinks.length > 0) {
-              commentBody += `### Successful Runs:\n${successLinks.join('\n')}\n\n`;
-            }
-
-            if (errorRepos.length > 0) {
-              commentBody += `### Errors:\n${errorRepos.join('\n')}\n\n`;
-            }
+            let commentBody = `🚀 Actions onboarding pull request(s) status:\n\n`;
+            commentBody += formattedLines.join('\n');
 
             // Post the comment
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: commentBody.replace(/  +/g, '')
+              body: commentBody
             });
 
       - name: Post failure message
