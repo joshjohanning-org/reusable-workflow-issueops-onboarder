@@ -96,11 +96,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           multi-gitter merge \
-            --config ./multi-gitter-config.yml \
-            --log-file ./multi-gitter.log
-
-      - name: print run log
-        run: cat multi-gitter.log
+            --config ./multi-gitter-config.yml
 
       # - name: Add created label and close issue
       #   if: ${{ success() }}
@@ -122,26 +118,8 @@ jobs:
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
-            const fs = require('fs');
-
-            // Read the contents of the multi-gitter.log file
-            const runLog = fs.readFileSync('./multi-gitter.log', 'utf8');
-
-            // Parse the log for all lines
-            const logLines = runLog.split('\n').filter(line => line.trim() !== '');
-            const formattedLines = logLines.map(line => {
-              const match = line.match(/^(.+?)\s+#(\d+):\s+(.*)$/);
-              if (match) {
-                const repo = match[1].trim();
-                const prNumber = match[2].trim();
-                const status = match[3].trim();
-                return `- ${repo} [#${prNumber}](https://github.com/${repo}/pull/${prNumber}): ${status}`;
-              }
-              return `- ${line}`; // If the line doesn't match the expected format, include it as-is
-            });
-
             // Construct the comment body
-            let commentBody = `🚀 Actions onboarding pull request(s) status:\n\n`;
+            let commentBody = `🚀 Actions onboarding pull request(s) merged. Run the `.status` command next for the statuses, or [action logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).\n`;
             commentBody += formattedLines.join('\n');
 
             // Post the comment
