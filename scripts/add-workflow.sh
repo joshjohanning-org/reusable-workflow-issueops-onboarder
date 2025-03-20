@@ -9,6 +9,7 @@ REPLACE_WITH_FILE="$1"
 if [ -f "$FILE" ]; then
   echo "File $FILE exists."
   cp $REPLACE_WITH_FILE $FILE
+  echo "" >> $FILE
   echo "File $FILE updated."
 else
   echo "File $FILE does not exist. Creating from $REPLACE_WITH_FILE...."
