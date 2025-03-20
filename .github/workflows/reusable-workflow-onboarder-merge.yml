@@ -122,8 +122,26 @@ jobs:
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
+            const fs = require('fs');
+
+            // Read the contents of the multi-gitter.log file
+            const runLog = fs.readFileSync('./multi-gitter.log', 'utf8');
+
+            // Parse the log for PRs
+            const logLines = runLog.split('\n').filter(line => line.includes('Merging pr='));
+            const formattedLines = logLines.map(line => {
+              const match = line.match(/pr="(.+?)\s+#(\d+)"/);
+              if (match) {
+                const repo = match[1].trim();
+                const prNumber = match[2].trim();
+                return `- [${repo} #${prNumber}](https://github.com/${repo}/pull/${prNumber})`;
+              }
+              return null;
+            }).filter(line => line !== null);
+
             // Construct the comment body
-            let commentBody = `🚀 Actions onboarding pull request(s) merged. Run the \`.status\` command next for the statuses, or [action logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).\n`;
+            let commentBody = `🚀 Actions onboarding pull request(s) merged:\n\n`;
+            commentBody += formattedLines.join('\n');
 
             // Post the comment
             await github.rest.issues.createComment({
