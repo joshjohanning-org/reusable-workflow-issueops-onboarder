@@ -123,7 +123,7 @@ jobs:
         run: |
           multi-gitter run ./scripts/add-workflow.sh \
             --config ./multi-gitter-config.yml \
-            --log-file ./multi-gitter.log
+            --output ./multi-gitter.log
 
       - name: run multi-gitter status
         env:
