@@ -34,7 +34,7 @@ body:
       label: Other Configuration
       description: Add in these other configuration files / workflows into the repository? 
       options:
-        - label: "Dependency Review"
+        - label: "Dependency Review workflow (not implemented yet)"
           required: false
-        - label: "Dependabot"
+        - label: "Dependabot configuration"
           required: false

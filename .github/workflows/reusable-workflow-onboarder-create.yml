@@ -50,6 +50,7 @@ jobs:
           echo "OTHER_CONFIGURATION=${{ steps.issue-parser.outputs.issueparser_other_configuration }}" >> $GITHUB_ENV
 
       # doing this again in case someone else renamed the issue
+      # TODO: could create this as a custom action for example
       - name: Rename issue
         uses: actions/github-script@v7
         with:
@@ -67,9 +68,6 @@ jobs:
             })
 
       # TODO: modify YAML file accordingly (for the reusable workflow)
-      # TODO: create pull request - include any TODOs remaining for user (and tag them in the PR / add as an assignee)
-      # TODO: create a Copilot custom instructions file and PR it the repo also? `.github/copilot-instructions.md`
-
 
       - name: download and install multi-gitter
         run: |
@@ -112,6 +110,14 @@ jobs:
       - name: update script for copilot instructions
         run: |
           sed -i "s|\$2|${{ github.workspace }}/.github/copilot-instructions.md|g" ./scripts/add-workflow.sh
+
+      - name: update script for dependabot configuration
+        run: |
+          if [[ "${{ env.OTHER_CONFIGURATION }}" == *"Dependabot"* ]]; then
+            sed -i "s|\$3|\"true\"|g" ./scripts/add-workflow.sh
+          else
+            sed -i "s|\$3|\"false\"|g" ./scripts/add-workflow.sh
+          fi
 
       - name: print script
         run: |
