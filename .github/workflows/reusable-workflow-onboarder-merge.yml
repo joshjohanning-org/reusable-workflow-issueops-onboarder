@@ -145,7 +145,7 @@ jobs:
                 if (match) {
                   const repo = match[1].trim();
                   const prNumber = match[2].trim();
-                  return `- ${msgContent.replace(/pr="(.+?)\s+#(\d+)"/, `https://github.com/${repo}/pull/${prNumber}`)}`; 
+                  return `- ${msgContent.replace(/pr="(.+?)\s+#(\d+)"/, `${{ github.SERVER_URL }}/${repo}/pull/${prNumber}`)}`; 
                 }
               }
               

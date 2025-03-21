@@ -114,17 +114,29 @@ jobs:
             // Read the contents of the multi-gitter.log file
             const runLog = fs.readFileSync('./multi-gitter.log', 'utf8');
 
-            // Parse the log for all lines
-            const logLines = runLog.split('\n').filter(line => line.trim() !== '');
+            // Parse the log for lines with msg= (excluding summary lines like "Merging 2 pull requests")
+            const logLines = runLog.split('\n').filter(line => 
+              line.includes('msg=') && 
+              !line.includes('pull requests')
+            );
+
+            // Format the lines
             const formattedLines = logLines.map(line => {
-              const match = line.match(/^(.+?)\s+#(\d+):\s+(.*)$/);
-              if (match) {
-                const repo = match[1].trim();
-                const prNumber = match[2].trim();
-                const status = match[3].trim();
-                return `- ${repo} [#${prNumber}](${{ github.SERVER_URL }}/${repo}/pull/${prNumber}): ${status}`;
+              // Extract everything after msg=
+              const msgContent = line.split('msg=')[1].trim();
+              
+              // Check if this is a PR line (contains repo name and PR number)
+              if (msgContent.includes('pr=')) {
+                const match = msgContent.match(/pr="(.+?)\s+#(\d+)"/);
+                if (match) {
+                  const repo = match[1].trim();
+                  const prNumber = match[2].trim();
+                  return `- ${msgContent.replace(/pr="(.+?)\s+#(\d+)"/, `${{ github.SERVER_URL }}/${repo}/pull/${prNumber}`)}`; 
+                }
               }
-              return `- ${line}`; // If the line doesn't match the expected format, include it as-is
+              
+              // For any other message types, just add a bullet
+              return `- ${msgContent}`;
             });
 
             // Construct the comment body
