@@ -38,9 +38,9 @@ jobs:
       - name: checkout reusable workflow repo
         uses: actions/checkout@v4
         with:
-          repository: joshjohanning-org/reusable-workflows
+          repository: joshjohanning-org/reusable-workflows-callers
           token: ${{ steps.app-token.outputs.token }}
-          path: reusable-workflows
+          path: reusable-workflows-callers
 
       # setting as env variables to avoid potential script injection
       - name: Set env vars
@@ -105,7 +105,7 @@ jobs:
             exit 1
           fi
 
-          sed -i "s|\$1|${{ github.workspace }}/reusable-workflows/.github/workflows/$workflow|g" ./scripts/add-workflow.sh
+          sed -i "s|\$1|${{ github.workspace }}/reusable-workflows-callers/.github/workflows/$workflow|g" ./scripts/add-workflow.sh
 
       - name: update script for copilot instructions
         run: |
