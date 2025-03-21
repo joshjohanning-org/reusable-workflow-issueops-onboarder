@@ -103,20 +103,6 @@ jobs:
       - name: print run log
         run: cat multi-gitter.log
 
-      # - name: Add created label and close issue
-      #   if: ${{ success() }}
-      #   uses: actions/github-script@v7
-      #   with:
-      #     github-token: ${{ steps.app-token.outputs.token }}
-      #     script: |
-      #       await github.rest.issues.update({
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         issue_number: context.issue.number,
-      #         labels: ["created", "actions"],
-      #         state: "closed"
-      #       })
-
       - name: Post status message
         uses: actions/github-script@v7
         if: ${{ success() }}
