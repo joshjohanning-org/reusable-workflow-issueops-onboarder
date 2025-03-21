@@ -25,7 +25,7 @@ body:
       description: Please select the visibility for the new repository
       options:
         - PLEASE SELECT ONE
-        - docker
+        - docker (not implemented yet)
         - java
     validations:
       required: true
