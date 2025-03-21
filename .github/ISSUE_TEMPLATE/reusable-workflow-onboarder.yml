@@ -38,3 +38,5 @@ body:
           required: false
         - label: "Dependabot configuration"
           required: false
+        - label: "CodeQL advanced workflow (not implemented yet)"
+          required: false
