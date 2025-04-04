@@ -28,7 +28,7 @@ jobs:
         with:
           template-path: .github/ISSUE_TEMPLATE/reusable-workflow-onboarder.yml
 
-      - uses: actions/create-github-app-token@v1
+      - uses: actions/create-github-app-token@v2
         id: app-token
         with:
           app-id: ${{ vars.APP_ID }}
