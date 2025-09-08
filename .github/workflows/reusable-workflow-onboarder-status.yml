@@ -51,7 +51,7 @@ jobs:
 
       # doing this again in case someone else renamed the issue
       - name: Rename issue
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
@@ -72,7 +72,7 @@ jobs:
           multi-gitter version
 
       - name: Build multi-gitter config
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           REPOSITORIES: ${{ steps.issue-parser.outputs.issueparser_repositories }}
         with:
@@ -104,7 +104,7 @@ jobs:
         run: cat multi-gitter.log
 
       - name: Post status message
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         if: ${{ success() }}
         with:
           github-token: ${{ steps.app-token.outputs.token }}
@@ -142,7 +142,7 @@ jobs:
 
       - name: Post failure message
         if: ${{ failure() }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             let commentBody
