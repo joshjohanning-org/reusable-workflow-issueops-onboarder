@@ -220,13 +220,13 @@ jobs:
             })
 
       - name: publish config
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: multi-gitter-config
           path: multi-gitter-config.yml
 
       - name: publish script
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: multi-gitter-script
           path: ./scripts/add-workflow.sh
