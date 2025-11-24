@@ -17,7 +17,7 @@ jobs:
       issues: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Write GitHub context to log
         env:
           GITHUB_CONTEXT: ${{ toJSON(github) }}
@@ -36,7 +36,7 @@ jobs:
           owner: ${{ github.repository_owner }}
 
       - name: checkout reusable workflow repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: joshjohanning-org/reusable-workflows-callers
           token: ${{ steps.app-token.outputs.token }}
