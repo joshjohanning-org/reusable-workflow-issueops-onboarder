@@ -155,7 +155,7 @@ jobs:
             })
 
       - name: publish config
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: multi-gitter-config
           path: multi-gitter-config.yml
